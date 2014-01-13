@@ -1,17 +1,18 @@
 <?php
 
-class DogsController{
+class UsersController{
 
 	public function __construct(){
 	}
 
 	public function actionFind(){
-		Api::response(200, array('Get all dogs'));
+		Api::response(200, array('Get all users'));
+                $user = new DB\SQL\Mapper($f3->get('DB'),'users');
 	}
 
 	public function actionCreate(){
 		if(isset($_POST['name'])){
-			$data = array('Create dog with name ' . $_POST['name']);
+			$data = array('Create user with name ' . $_POST['name']);
 			Api::response(200, $data);
 		}
 		else{
@@ -20,17 +21,17 @@ class DogsController{
 	}
 
 	public function actionFindOne(){
-		$data = array('Find one dog with name: ' . F3::get('PARAMS.id'));
+		$data = array('Find one user with name: ' . F3::get('PARAMS.id'));
 		Api::response(200, $data);
 	}
 
 	public function actionUpdate(){
-		$data = array('Update dog with name: ' . F3::get('PARAMS.id'));
+		$data = array('Update user with name: ' . F3::get('PARAMS.id'));
 		Api::response(200, $data);
 	}
 
 	public function actionDelete(){
-		$data = array('Delete dog with name: ' . F3::get('PARAMS.id'));
+		$data = array('Delete user with name: ' . F3::get('PARAMS.id'));
 		Api::response(200, $data);
 	}
 }
