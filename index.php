@@ -15,13 +15,6 @@ $f3->route('GET /', function($f3) {
 );
 
 
-  $db = new DB\SQL(
-    'mysql:host=localhost;port=3306;dbname=api_cifacom',
-    'root',
-    ''
-  );
 
-$f3->set('result',$db->exec('SELECT * FROM users'));
-echo Template::instance()->render('abc.html');
 
 $f3->run();
