@@ -15,9 +15,13 @@ class MoviesController {
     }
 
     public function actionFind() {
-        Api::response(200, array('Get all movies'));
-        $f3->set('result', $db->exec('SELECT * FROM movies'));
-        echo Template::instance()->render('abc.html');
+ 
+        $rq = "SELECT id, name, kind, description FROM movies";
+        $res=DBcontroller::get_instance()->prepare($rq);
+        print_r($res->execute());
+        $tab = $res->fetchAll();
+        Api::response(200, $tab);
+        
     }
 
     public function actionCreate() {
