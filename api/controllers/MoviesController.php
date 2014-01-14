@@ -2,24 +2,9 @@
 
 class MoviesController {
 
-    public $id;
-    public $name;
-    public $kind;
-    public $description;
-    
-    public function __construct($id=0, $name='', $kind='', $description='') {
-        $this->Id = $id;
-        $this->Name = $name;
-        $this->Kind = $kind;
-        $this->Description = $description;
-    }
-
     public function actionFind() {
  
-        $rq = "SELECT id, name, kind, description FROM movies";
-        $res=DBcontroller::get_instance()->prepare($rq);
-        print_r($res->execute());
-        $tab = $res->fetchAll();
+        $tab = Movie::liste();
         Api::response(200, $tab);
         
     }
