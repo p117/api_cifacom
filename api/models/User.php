@@ -158,4 +158,180 @@ class User {
         }
     }
 
+    public static function IntMovie($movieId) {
+        $flag = true;
+        if (count($_POST) > 1) {
+            return array('code' => '400', 'msg' => 'Too many arguments');
+        } else {
+            foreach ($_POST as $key => $value) {
+                $action = $key;
+                $userId = $value;
+            }
+            $rq = "SELECT * FROM users WHERE id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId));
+            if ($res->rowCount() == 0) {
+                return array('code' => '400', 'msg' => 'User does not exist');
+            } else {
+                switch ($action) {
+                    case 'like':
+                        $rq = "SELECT * FROM likes WHERE user_id=? AND movie_id=?";
+                        $res = DBcontroller::get_instance()->prepare($rq);
+                        $res->execute(array($userId, $movieId));
+                        if ($res->rowCount() == 0) {
+                            $rq = "INSERT INTO likes (user_id, movie_id) VALUES (?, ?)";
+                        } else {
+                            return array('code' => '400', 'msg' => 'This user already likes this movie');
+                            $flag = false;
+                        }
+                        break;
+                    case 'view':
+                        $rq = "SELECT * FROM views WHERE user_id=? AND movie_id=?";
+                        $res = DBcontroller::get_instance()->prepare($rq);
+                        $res->execute(array($userId, $movieId));
+                        if ($res->rowCount() == 0) {
+                            $rq = "INSERT INTO views (user_id, movie_id) VALUES (?, ?)";
+                        } else {
+                            return array('code' => '400', 'msg' => 'This user already views this movie');
+                            $flag = false;
+                        }
+                        break;
+                    case 'wish':
+                        $rq = "SELECT * FROM wishes WHERE user_id=? AND movie_id=?";
+                        $res = DBcontroller::get_instance()->prepare($rq);
+                        $res->execute(array($userId, $movieId));
+                        if ($res->rowCount() == 0) {
+                            $rq = "INSERT INTO wishes (user_id, movie_id) VALUES (?, ?)";
+                        } else {
+                            return array('code' => '400', 'msg' => 'This user already wishes seeing this movie');
+                            $flag = false;
+                        }
+                        break;
+                }
+                if ($flag == true) {
+                    $res = DBcontroller::get_instance()->prepare($rq);
+                    $res->execute(array((int) $userId, (int) $movieId));
+                    return array('code' => '400', 'msg' => 'Action complete');
+                }
+            }
+        }
+    }
+
+    public static function ListViews($userId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT name FROM views INNER JOIN movies ON views.movie_id = movies.id WHERE user_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            return $tab;
+        }
+    }
+
+    public static function ListLikes($userId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT name FROM likes INNER JOIN movies ON likes.movie_id = movies.id WHERE user_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            return $tab;
+        }
+    }
+
+    public static function ListWishes($userId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT name FROM wishes INNER JOIN movies ON wishes.movie_id = movies.id WHERE user_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            return $tab;
+        }
+    }
+
+    public static function DeleteView($userId, $movieId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT * FROM views WHERE user_id=? AND movie_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId, $movieId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            if ($res->rowCount() == 0) {
+                return array('code' => '400', 'msg' => 'This association does not exist');
+            } else {
+                $rq = "DELETE FROM views WHERE user_id=? AND movie_id=?";
+                $res = DBcontroller::get_instance()->prepare($rq);
+                $res->execute(array($userId, $movieId));
+                return array('code' => '400', 'msg' => 'View deleted');
+            }
+        }
+    }
+
+    public static function DeleteLike($userId, $movieId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT * FROM likes WHERE user_id=? AND movie_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId, $movieId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            if ($res->rowCount() == 0) {
+                return array('code' => '400', 'msg' => 'This association does not exist');
+            } else {
+                $rq = "DELETE FROM likes WHERE user_id=? AND movie_id=?";
+                $res = DBcontroller::get_instance()->prepare($rq);
+                $res->execute(array($userId, $movieId));
+                return array('code' => '400', 'msg' => 'Like deleted');
+            }
+        }
+    }
+
+    public static function DeleteWish($userId, $movieId) {
+        $rq = "SELECT * FROM users WHERE id=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($userId));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'User does not exist');
+        } else {
+            $rq = "SELECT * FROM wishes WHERE user_id=? AND movie_id=?";
+            $res = DBcontroller::get_instance()->prepare($rq);
+            $res->execute(array($userId, $movieId));
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+            if ($res->rowCount() == 0) {
+                return array('code' => '400', 'msg' => 'This association does not exist');
+            } else {
+                $rq = "DELETE FROM wishes WHERE user_id=? AND movie_id=?";
+                $res = DBcontroller::get_instance()->prepare($rq);
+                $res->execute(array($userId, $movieId));
+                return array('code' => '400', 'msg' => 'Wish deleted');
+            }
+        }
+    }
+
 }

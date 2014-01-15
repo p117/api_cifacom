@@ -82,3 +82,34 @@ DELETE /v1/users/@id
 ```
 Supprime le film identifié par @id.
 Nécessite de passer en paramètre un 'access_token' correspondant à un compte administrateur.
+
+
+# LIKES, VIEWS AND WISHES
+
+```
+POST /v1/movies/@id = UsersController->actionMovie
+```
+
+```
+GET /v1/users/@id/views = UsersController->actionFindViews
+```
+
+```
+GET /v1/users/@id/likes = UsersController->actionFindLikes
+```
+
+```
+GET /v1/users/@id/wishes = UsersController->actionFindWishes
+```
+
+```
+DELETE /v1/users/@idUser/DeleteView/@idMovie = UsersController->actionDeleteView
+```
+
+```
+DELETE /v1/users/@idUser/DeleteLike/@idMovie = UsersController->actionDeleteLike
+```
+
+```
+DELETE /v1/users/@idUser/DeleteWish/@idMovie = UsersController->actionDeleteWish
+```
