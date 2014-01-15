@@ -3,33 +3,37 @@
 class MoviesController {
 
     public function actionFind() {
- 
+
         $tab = Movie::liste();
         Api::response(200, $tab);
-        
+    }
+    
+    public function actionFindOne() {
+        //$data = array('Find one user with name: ' . F3::get('PARAMS.id'));
+        $tab = Movie::search((int) F3::get('PARAMS.id'));
+        Api::response(200, $tab);
     }
 
     public function actionCreate() {
-        if (isset($_POST['name'])) {
-            $data = array('Create movie with name ' . $_POST['name']);
-            Api::response(200, $data);
-        } else {
-            Api::response(400, array('error' => 'Name is missing'));
-        }
-    }
 
-    public function actionFindOne() {
-        //$data = array('Find one user with name: ' . F3::get('PARAMS.id'));
-        $tab = Movie::search((int)F3::get('PARAMS.id'));
-        Api::response(200, $tab);
+        $tab = Movie::create();
+        Api::response($tab['code'], $tab['msg']);
     }
 
     public function actionUpdate() {
+        
+        $tab = Movie::update(F3::get('PARAMS.id'));
+        Api::response($tab['code'], $tab['msg']);
+        
         $data = array('Update user with name: ' . F3::get('PARAMS.id'));
         Api::response(200, $data);
     }
 
     public function actionDelete() {
+        
+        $tab = Movie::delete(F3::get('PARAMS.id'));
+        Api::response($tab['code'], $tab['msg']);
+        
         $data = array('Delete user with name: ' . F3::get('PARAMS.id'));
         Api::response(200, $data);
     }

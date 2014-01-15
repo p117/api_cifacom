@@ -53,10 +53,10 @@ class User {
     //Enregistrement en base d'un utilisateur
     public static function create() {
 
-        if (isset($_POST['user'])) {
+        if (isset($_POST['access_token'])) {
             $rq = "SELECT admin FROM users WHERE access_token=?";
             $res = DBcontroller::get_instance()->prepare($rq);
-            $res->execute(array($_POST['user']));
+            $res->execute(array($_POST['access_token']));
             $tab = $res->fetchAll(PDO::FETCH_ASSOC);
             if ($res->rowCount() == 0) {
                 return array('code' => '400', 'msg' => 'Your account is invalid');
