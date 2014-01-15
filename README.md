@@ -87,29 +87,45 @@ Nécessite de passer en paramètre un 'access_token' correspondant à un compte 
 # LIKES, VIEWS AND WISHES
 
 ```
-POST /v1/movies/@id = UsersController->actionMovie
+POST /v1/movies/@id
 ```
+Permet, à un utilisateur, d'ajouter le film désigné par @id comme like, view ou wish.
+Cela se fait en passant en paramètre au choix wish, like ou view, et comme valeur l'id de l'utilisateur.
+ex. : /v1/movies/2?like=3
+Ici, l'utilisateur 3 va liker le film 2.
+
+ex. : /v1/movies/4?wish=2
+Ici, l'utilisateur 2 va "souhaiter voir" le film 4.
 
 ```
-GET /v1/users/@id/views = UsersController->actionFindViews
+GET /v1/users/@id/views
 ```
+Permet d'afficher les films marqués comme "view" par l'utilisateur @id.
+Pas de paramètre.
 
 ```
-GET /v1/users/@id/likes = UsersController->actionFindLikes
+GET /v1/users/@id/likes
 ```
+Permet d'afficher les films marqués comme "like" par l'utilisateur @id.
+Pas de paramètre.
 
 ```
-GET /v1/users/@id/wishes = UsersController->actionFindWishes
+GET /v1/users/@id/wishes
 ```
+Permet d'afficher les films marqués comme "wish" par l'utilisateur @id.
+Pas de paramètre.
 
 ```
-DELETE /v1/users/@idUser/DeleteView/@idMovie = UsersController->actionDeleteView
+DELETE /v1/users/@idUser/DeleteView/@idMovie
 ```
+Permet à l'utilisateur @idUser de supprimer le film @idMovie de sa liste de "vus".
 
 ```
-DELETE /v1/users/@idUser/DeleteLike/@idMovie = UsersController->actionDeleteLike
+DELETE /v1/users/@idUser/DeleteLike/@idMovie
 ```
+Permet à l'utilisateur @idUser de supprimer le film @idMovie de sa liste de "like".
 
 ```
-DELETE /v1/users/@idUser/DeleteWish/@idMovie = UsersController->actionDeleteWish
+DELETE /v1/users/@idUser/DeleteWish/@idMovie
 ```
+Permet à l'utilisateur @idUser de supprimer le film @idMovie de sa liste de "souhaits".
