@@ -11,14 +11,7 @@ $f3->config('api/configs/routes.ini');
 
 $f3->route('GET /', function($f3) {
     Api::response(404, 0);
-}
-);
-$f3->route('GET /brew/@count',
-    function($f3) {
-        echo $f3->get('PARAMS.count').' bottles of beer on the wall.';
-    }
-);
-
+});
 
 
 $f3->run();

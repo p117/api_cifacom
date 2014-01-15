@@ -19,8 +19,9 @@ class MoviesController {
     }
 
     public function actionFindOne() {
-        $data = array('Find one user with name: ' . F3::get('PARAMS.id'));
-        Api::response(200, $data);
+        //$data = array('Find one user with name: ' . F3::get('PARAMS.id'));
+        $tab = Movie::search((int)F3::get('PARAMS.id'));
+        Api::response(200, $tab);
     }
 
     public function actionUpdate() {

@@ -20,20 +20,22 @@ class User {
 
     //Listage de tous les utilisateurs enregistrés
     public static function liste() {
-        $rq = "SELECT id, login, mail FROM users";
+
+        $rq = "SELECT * FROM users";
         $res = DBcontroller::get_instance()->prepare($rq);
         $res->execute();
-        $tab = $res->fetchAll();
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
         return $tab;
     }
 
     //Connexion d'un utilisateur
     public static function log() {
+
         if (isset($_GET['mail']) && isset($_GET['password'])) {
             $rq = "SELECT * FROM users WHERE mail=?";
             $res = DBcontroller::get_instance()->prepare($rq);
             $res->execute(array($_GET['mail']));
-            $tab = $res->fetchAll();
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
             if ($res->rowCount() == 0) {
                 return array('code' => '400', 'msg' => 'Wrong mail / password');
             } else {
@@ -50,11 +52,12 @@ class User {
 
     //Enregistrement en base d'un utilisateur
     public static function create() {
+
         if (isset($_POST['user'])) {
             $rq = "SELECT admin FROM users WHERE access_token=?";
             $res = DBcontroller::get_instance()->prepare($rq);
             $res->execute(array($_POST['user']));
-            $tab = $res->fetchAll();
+            $tab = $res->fetchAll(PDO::FETCH_ASSOC);
             if ($res->rowCount() == 0) {
                 return array('code' => '400', 'msg' => 'Your account is invalid');
             } else {
@@ -77,25 +80,81 @@ class User {
     }
 
     //Suppression d'un utilisateur
-    public static function delete() {
-        print_r($_GET);
-        if (isset($_PUT['user'])) {
-            
+    public static function delete($id) {
+
+        $rq = "SELECT admin FROM users WHERE access_token=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($_GET['access_token']));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'Access token not valid');
         } else {
-            return array('code' => '400', 'msg' => 'You have to be logged');
+            if ($tab[0]['admin'] == 0) {
+                return array('code' => '400', 'msg' => 'Admin permission needed');
+            } else {
+                $rq = "DELETE FROM users WHERE id=?";
+                $res = DBcontroller::get_instance()->prepare($rq);
+                $res->execute(array($id));
+                return array('code' => '200', 'msg' => 'User deleted');
+            }
         }
     }
 
     public static function search($id) {
-        $rq = "SELECT id, login, mail, access_token FROM users WHERE id=?";
+
+        $rq = "SELECT * FROM users WHERE id=?";
         $res = DBcontroller::get_instance()->prepare($rq);
         $res->execute(array($id));
-        $tab = $res->fetchAll();
-        print_r($res->fetch());
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
         if ($res->rowCount() == 0) {
             return array('code' => '400', 'msg' => 'User does not exist');
         } else {
             return $tab;
+        }
+    }
+
+    public static function update($id) {
+
+        $rq = "SELECT admin FROM users WHERE access_token=?";
+        $res = DBcontroller::get_instance()->prepare($rq);
+        $res->execute(array($_GET['access_token']));
+        $tab = $res->fetchAll(PDO::FETCH_ASSOC);
+        if ($res->rowCount() == 0) {
+            return array('code' => '400', 'msg' => 'Access token not valid');
+        } else {
+            if ($tab[0]['admin'] == 0) {
+                return array('code' => '400', 'msg' => 'Admin permission needed');
+            } else {
+                if (isset($_GET['password']) || isset($_GET['login']) || isset($_GET['mail'])) {
+                    $tmp = array();
+                    if (isset($_GET['password']) && !empty($_GET['password'])) {
+                        $tmp['password'] = $_GET['password'];
+                    }
+                    if (isset($_GET['mail']) && !empty($_GET['mail'])) {
+                        $tmp['mail'] = $_GET['mail'];
+                    }
+                    if (isset($_GET['login']) && !empty($_GET['login'])) {
+                        $tmp['login'] = $_GET['login'];
+                    }
+                    print_r($tmp);
+                    $rq = "SELECT password, mail, login FROM users WHERE id=?";
+                    $res = DBcontroller::get_instance()->prepare($rq);
+                    $res->execute(array($id));
+                    $user = $res->fetchAll(PDO::FETCH_ASSOC);
+                    print_r($user[0]);
+                    if (isset($tmp['password']))
+                        $user[0]['password'] = $tmp['password'];
+                    if (isset($tmp['mail']))
+                        $user[0]['mail'] = $tmp['mail'];
+                    if (isset($tmp['login']))
+                        $user[0]['login'] = $tmp['login'];
+                    print_r($user[0]);
+                    $rq = "UPDATE users SET password=?, login=?, mail=? WHERE id=?";
+                    $res = DBcontroller::get_instance()->prepare($rq);
+                    $res->execute(array($user[0]['password'], $user[0]['login'], $user[0]['mail'], $id));
+                    return array('code' => '200', 'msg' => 'User updated');
+                }
+            }
         }
     }
 
