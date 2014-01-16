@@ -22,6 +22,7 @@ class User {
         $this->Mail = $mail;
         $this->Password = $password;
         $this->Acess_token = $access_token;
+        
     }
 
     //Listage de tous les utilisateurs enregistrés
@@ -32,6 +33,7 @@ class User {
         $res->execute();
         $tab = $res->fetchAll(PDO::FETCH_ASSOC);
         return $tab;
+        
     }
 
     //Connexion d'un utilisateur
@@ -62,7 +64,7 @@ class User {
         if (isset($_GET['access_token'])) {
             $rq = "SELECT admin FROM users WHERE access_token=?";
             $res = DBcontroller::get_instance()->prepare($rq);
-            $res->execute(array($_POST['access_token']));
+            $res->execute(array($_GET['access_token']));
             $tab = $res->fetchAll(PDO::FETCH_ASSOC);
             if ($res->rowCount() == 0) {
                 return array('code' => '400', 'msg' => 'Your account is invalid');
