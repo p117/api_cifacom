@@ -24,9 +24,7 @@ class MoviesController {
         
         $tab = Movie::update(F3::get('PARAMS.id'));
         Api::response($tab['code'], $tab['msg']);
-        
-        $data = array('Update user with name: ' . F3::get('PARAMS.id'));
-        Api::response(200, $data);
+
     }
 
     public function actionDelete() {
@@ -34,8 +32,6 @@ class MoviesController {
         $tab = Movie::delete(F3::get('PARAMS.id'));
         Api::response($tab['code'], $tab['msg']);
         
-        $data = array('Delete user with name: ' . F3::get('PARAMS.id'));
-        Api::response(200, $data);
     }
 
 }

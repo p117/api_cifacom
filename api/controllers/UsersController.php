@@ -33,9 +33,6 @@ class UsersController {
         
         $tab = User::update(F3::get('PARAMS.id'));
         Api::response($tab['code'], $tab['msg']);
-        
-        $data = array('Update user with name: ' . F3::get('PARAMS.id'));
-        Api::response(200, $data);
     }
 
     public function actionDelete() {
@@ -43,8 +40,6 @@ class UsersController {
         $tab = User::delete(F3::get('PARAMS.id'));
         Api::response($tab['code'], $tab['msg']);
         
-        $data = array('Delete user with name: ' . F3::get('PARAMS.id'));
-        Api::response(200, $data);
     }
     
     public function actionMovie(){
