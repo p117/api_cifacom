@@ -50,7 +50,7 @@ class Movie {
         if (isset($_GET['access_token'])) {
             $rq = "SELECT admin FROM users WHERE access_token=?";
             $res = DBcontroller::get_instance()->prepare($rq);
-            $res->execute(array($_POST['access_token']));
+            $res->execute(array($_GET['access_token']));
             $tab = $res->fetchAll(PDO::FETCH_ASSOC);
             if ($res->rowCount() == 0) {
                 return array('code' => '400', 'msg' => 'Your account is invalid');
@@ -87,10 +87,17 @@ class Movie {
                 if ($tab[0]['admin'] == 0) {
                     return array('code' => '400', 'msg' => 'Error : Admin permission needed');
                 } else {
-                    $rq = "DELETE FROM movies WHERE id=?";
+                    $rq = "SELECT * FROM movies WHERE id=?";
                     $res = DBcontroller::get_instance()->prepare($rq);
                     $res->execute(array($id));
-                    return array('code' => '200', 'msg' => 'Success : Movie deleted');
+                    if ($res->rowCount() == 0) {
+                        return array('code' => '200', 'msg' => 'Error : Movie doesn\'t exist');
+                    } else {
+                        $rq = "DELETE FROM movies WHERE id=?";
+                        $res = DBcontroller::get_instance()->prepare($rq);
+                        $res->execute(array($id));
+                        return array('code' => '200', 'msg' => 'Success : Movie deleted');
+                    }
                 }
             }
         } else {
